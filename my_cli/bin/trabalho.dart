@@ -1,135 +1,126 @@
-enum TipoConta { Poupanca, Salario, Corrente }
+enum TipoC { P, S, C }
 
-class Cliente {
-  final String nome;
-  final String cpf;
+class Cl {
+  final String n;
+  final String i;
 
-  Cliente(this.nome, this.cpf);
+  Cl(this.n, this.i);
 }
 
-class Conta {
-  final int numero;
-  final Cliente cliente;
-  double saldo;
+class A {
+  final int n;
+  double b;
 
-  Conta(this.numero, this.cliente, this.saldo);
+  A(this.n, this.b);
 
-  void depositar(double valor) {
-    if (valor <= 0) {
-      throw Exception("O valor do depósito deve ser maior que zero.");
+  void d(double v) {
+    if (v <= 0) {
+      throw Exception("Valor do depósito deve ser maior que zero.");
     }
-    saldo += valor;
+    b += v;
   }
 
-  void sacar(double valor) {
-    if (valor <= 0) {
-      throw Exception("O valor do saque deve ser maior que zero.");
+  void s(double v) {
+    if (v <= 0) {
+      throw Exception("Valor do saque deve ser maior que zero.");
     }
-    if (saldo >= valor) {
-      saldo -= valor;
+    if (b >= v) {
+      b -= v;
     } else {
-      throw Exception("Saldo insuficiente para realizar o saque.");
+      throw Exception("Saldo insuficiente para saque.");
     }
   }
 
-  double consultarSaldo() {
-    return saldo;
+  double c() {
+    return b;
   }
 
-  String gerarExtrato(DateTime inicio, DateTime fim) {
-    if (inicio.isAfter(fim)) {
-      throw Exception("A data de início deve ser anterior à data de fim.");
+  String g(DateTime i, DateTime f) {
+    if (i.isAfter(f)) {
+      throw Exception("Data de início deve ser anterior à data de fim.");
     }
-    return "Extrato de ${cliente.nome} de $inicio até $fim: Saldo inicial: ${saldo + inicio.day}, Saldo final: ${saldo + fim.day}";
-  }
-}
-
-class ContaPoupanca extends Conta {
-  ContaPoupanca(int numero, Cliente cliente, double saldoInicial)
-      : super(numero, cliente, saldoInicial) {
-    if (saldoInicial < 50.0) {
-      throw Exception("A conta poupança deve ser aberta com no mínimo R\$50,00.");
-    }
-  }
-
-  void aplicarRendimento(double taxa) {
-    if (taxa <= 0) {
-      throw Exception("A taxa de rendimento deve ser maior que zero.");
-    }
-    saldo += saldo * taxa;
+    return "E ${n} de ${i} até ${f}: SI ${b + i.day}, SF ${b + f.day}";
   }
 }
 
-class ContaSalario extends Conta {
-  ContaSalario(int numero, Cliente cliente) : super(numero, cliente, 0);
-}
-
-class ContaCorrente extends Conta {
-  ContaCorrente(int numero, Cliente cliente) : super(numero, cliente, 0);
-}
-
-class ContaConjunta extends Conta {
-  final List<Cliente> titulares;
-
-  ContaConjunta(int numero, this.titulares) : super(numero, titulares[0], 0) {
-    if (titulares.length > 2) {
-      throw Exception("A conta conjunta não pode ter mais de dois titulares.");
+class Po extends A {
+  Po(int n, Cl c, double s)
+      : super(n, c, s) {
+    if (s < 50.0) {
+      throw Exception("Conta poupança deve ter no mínimo R\$50,00.");
     }
   }
 
-  void adicionarTitular(Cliente novoTitular) {
-    if (titulares.length == 2) {
-      throw Exception("A conta conjunta já possui o número máximo de titulares.");
+  void a(double t) {
+    if (t <= 0) {
+      throw Exception("Taxa de rendimento deve ser maior que zero.");
     }
-    titulares.add(novoTitular);
+    b += b * t;
+  }
+}
+
+class Sa extends A {
+  Sa(int n, Cl c) : super(n, c, 0);
+}
+
+class Co extends A {
+  final List<Cl> t;
+
+  Co(int n, this.t) : super(n, t[0], 0) {
+    if (t.length > 2) {
+      throw Exception("Conta conjunta não pode ter mais de dois titulares.");
+    }
   }
 
-  void removerTitular(Cliente titularRemovido) {
-    if (titulares.length == 1) {
-      throw Exception("A conta conjunta deve ter pelo menos um titular.");
+  void a(Cl n) {
+    if (t.length == 2) {
+      throw Exception("Conta conjunta já possui o número máximo de titulares.");
     }
-    if (titulares.contains(titularRemovido)) {
-      titulares.remove(titularRemovido);
+    t.add(n);
+  }
+
+  void r(Cl t) {
+    if (t.length == 1) {
+      throw Exception("Conta conjunta deve ter pelo menos um titular.");
+    }
+    if (t.contains(t)) {
+      t.remove(t);
     } else {
-      throw Exception("O titular especificado não está na conta conjunta.");
+      throw Exception("Titular especificado não está na conta conjunta.");
     }
   }
 }
 
 void main() {
-  final cliente1 = Cliente("Pedro", "123.456.789-00");
-  final cliente2 = Cliente("Marcos", "987.654.321-00");
+  final c1 = Cl("Pedro", "123.456.789-00");
+  final c2 = Cl("Marcos", "987.654.321-00");
 
-  final contaPoupanca = ContaPoupanca(1, cliente1, 100.0);
-  final contaSalario = ContaSalario(2, cliente2);
-  final contaCorrente = ContaCorrente(3, cliente2);
-  final contaConjunta = ContaConjunta(4, [cliente1, cliente2]);
+  final cp = Po(1, c1, 100.0);
+  final cs = Sa(2, c2);
+  final cc = Co(3, [c1, c2]);
 
-  contaPoupanca.depositar(200.0);
-  contaSalario.depositar(1000.0);
-  contaCorrente.depositar(500.0);
-  contaConjunta.depositar(300.0);
+  cp.d(200.0);
+  cs.d(1000.0);
+  cc.d(500.0);
   
-  contaPoupanca.sacar(50.0);
-  contaSalario.sacar(200.0);
-  contaCorrente.sacar(100.0);
-  contaConjunta.sacar(150.0);
+  cp.s(50.0);
+  cs.s(200.0);
+  cc.s(100.0);
 
-  print("Saldo conta poupança: R\$${contaPoupanca.consultarSaldo()}");
-  print("Saldo conta salário: R\$${contaSalario.consultarSaldo()}");
-  print("Saldo conta corrente: R\$${contaCorrente.consultarSaldo()}");
-  print("Saldo conta conjunta: R\$${contaConjunta.consultarSaldo()}");
+  print("Saldo cp: R\$${cp.c()}");
+  print("Saldo cs: R\$${cs.c()}");
+  print("Saldo cc: R\$${cc.c()}");
 
-  final extrato = contaPoupanca.gerarExtrato(DateTime(2023, 1, 1), DateTime(2023, 9, 1));
-  print(extrato);
+  final e = cp.g(DateTime(2023, 1, 1), DateTime(2023, 9, 1));
+  print(e);
 
-  contaPoupanca.aplicarRendimento(0.03);
+  cp.a(0.03);
 
-  print("Saldo conta poupança após rendimento: R\$${contaPoupanca.consultarSaldo()}");
+  print("Saldo cp após rendimento: R\$${cp.c()}");
 
-  contaConjunta.adicionarTitular(Cliente("Lucas", "456.789.123-00"));
-  print("Titulares da conta conjunta: ${contaConjunta.titulares.map((titular) => titular.nome).join(", ")}");
+  cc.a(Cl("Lucas", "456.789.123-00"));
+  print("Titulares da cc: ${cc.t.map((t) => t.n).join(", ")}");
   
-  contaConjunta.removerTitular(cliente1);
-  print("Titulares da conta conjunta após remoção: ${contaConjunta.titulares.map((titular) => titular.nome).join(", ")}");
+  cc.r(c1);
+  print("Titulares da cc após remoção: ${cc.t.map((t) => t.n).join(", ")}");
 }
