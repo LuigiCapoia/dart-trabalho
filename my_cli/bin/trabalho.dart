@@ -97,17 +97,14 @@ class ContaConjunta extends Conta {
 }
 
 void main() {
-  // Criar clientes
   final cliente1 = Cliente("Pedro", "123.456.789-00");
   final cliente2 = Cliente("Marcos", "987.654.321-00");
 
-  // Criar contas
   final contaPoupanca = ContaPoupanca(1, cliente1, 100.0);
   final contaSalario = ContaSalario(2, cliente2);
   final contaCorrente = ContaCorrente(3, cliente2);
   final contaConjunta = ContaConjunta(4, [cliente1, cliente2]);
 
-  // Realizar transações
   contaPoupanca.depositar(200.0);
   contaSalario.depositar(1000.0);
   contaCorrente.depositar(500.0);
@@ -118,23 +115,18 @@ void main() {
   contaCorrente.sacar(100.0);
   contaConjunta.sacar(150.0);
 
-  // Exibir saldo
   print("Saldo conta poupança: R\$${contaPoupanca.consultarSaldo()}");
   print("Saldo conta salário: R\$${contaSalario.consultarSaldo()}");
   print("Saldo conta corrente: R\$${contaCorrente.consultarSaldo()}");
   print("Saldo conta conjunta: R\$${contaConjunta.consultarSaldo()}");
 
-  // Gerar extrato
   final extrato = contaPoupanca.gerarExtrato(DateTime(2023, 1, 1), DateTime(2023, 9, 1));
   print(extrato);
 
-  // Aplicar rendimento na conta poupança
   contaPoupanca.aplicarRendimento(0.03);
 
-  // Exibir saldo após rendimento
   print("Saldo conta poupança após rendimento: R\$${contaPoupanca.consultarSaldo()}");
 
-  // Adicionar e remover titulares na conta conjunta
   contaConjunta.adicionarTitular(Cliente("Lucas", "456.789.123-00"));
   print("Titulares da conta conjunta: ${contaConjunta.titulares.map((titular) => titular.nome).join(", ")}");
   
